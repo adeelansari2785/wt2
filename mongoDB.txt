@@ -1,0 +1,185 @@
+{
+	first_name:"John",
+	last_name:"Doe",
+	memberships: ["mem1","mem2"],
+	address:{
+		street:"4 main st",
+		city:"Boston"
+	}
+	contacts:[
+		{name:"Brad", relationship:"friend"}
+	]
+}
+-----------------------------
+First step create users
+
+db.createUser({
+	user:"adeel",
+	pwd:"1234",
+	roles:["readWrite", "dbAdmin"]
+});
+
+-----------------------------
+
+Create a collection:
+
+db.createCollection('customers');
+
+-----------------------------
+
+View all collections:
+
+show collections
+
+-----------------------------
+
+Show all databases:
+
+show dbs
+
+-----------------------------
+
+To go into a database and create one:
+
+use mycustomers
+
+-----------------------------
+
+To insert a record:
+
+db.customers.insert({first_name:"John", last_name:"Doe"});
+
+-----------------------------
+
+To view all records:
+
+db.customers.find();
+
+To view in a better way:
+
+db.customers.find().pretty();
+
+-----------------------------
+
+To update a record:
+
+db.customers.update({first_name:"Steven"},{first_name:"Steven", last_name:"Smith",gender:"male"});
+
+or
+
+db.customers.update({first_name:"Adeel"},{$set:{gender:"male"}});
+
+------------------------------
+
+To update, increase a number by a value, use INC operator:
+
+db.customers.update({first_name:"Adeel"},{$inc:{age:5}});
+
+------------------------------
+To remove a field (removes age column)
+
+db.customers.update({first_name:"Steven"},{$unset:{age:1}});
+
+------------------------------
+
+To update a record which does not exist, but if it does not exist, we want to have it inserted:
+
+db.customers.update({first_name:"Mary"},{first_name:"Mary",last_name:"Samson"},{upsert:true});
+
+------------------------------
+To change the name of column:
+
+db.customers.update({first_name:"Steven"},{$rename:{"gender":"sex")});
+
+------------------------------
+Remove a record by a column:
+
+db.customers.remove({first_name:"Steven"});
+
+------------------------------
+To delete the first record it finds:
+
+db.customers.remove({first_name:"Steven"},{justOne:true});
+
+------------------------------
+To search a record by a parameter:
+
+db.customers.find({first_name:"Sharon"});
+
+------------------------------
+To find let's says we want to find Sharon OR Troy:
+
+db.customers.find({$or:[{first_name:"Sharon"},{first_name:"Troy"}]});
+------------------------------
+
+To find by gender:
+
+db.customers.find({gender:"male"});
+
+------------------------------
+
+We can use greater than or less than operators:
+
+Find under age 40:
+
+greater than:
+db.customers.find({age:{$gt:40}});     
+
+less than:
+db.customers.find({age:{$lt:40}});
+
+greater than or equal to: $gte
+less than or equal to: $lte
+
+------------------------------
+To find people belonging to the city "Boston", if Address is the main column, and City is the sub-column:
+
+db.customers.find({"address.city":"Boston"});
+------------------------------
+
+To find, items in an array called "memberships":
+
+db.customers.find({memberships:"mem1"});
+
+------------------------------
+
+To clear the screen
+
+cls
+
+------------------------------
+
+Sorting
+1 is for ascending order
+db.customers.find().sort({last_name:1});
+
+-1 is for descending order
+
+db.customers.find().sort({last_name:-1});
+------------------------------
+
+To give total count of records:
+
+db.customers.find().count();
+
+Count with a query:
+
+db.customers.find({gender:"male"}).count();
+
+To put a limit:
+
+db.customers.find().limit(4);
+
+It will give the first 4 records.
+
+Limit and sort:
+
+db.customers.find().limit(4).sort({last_name:1});
+
+------------------------------
+Prints in a proper layout of customer's first name column with with "customer name:":
+
+db.customers.find().forEach(function(doc){print("Customer Name:"+doc.first_name)});
+
+A function is used, print is for printing. Foreach is for individual records.
+------------------------------
